@@ -4,6 +4,7 @@ namespace Eluinhot\TSChannelRemover;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 use TeamSpeak3_Node_Channel;
@@ -31,6 +32,14 @@ class ChannelRemoveCommand extends Command {
         $this->excludes = $container->getParameter('teamspeak.excludes');
         $this->allowedMins = $container->getParameter('teamspeak.allowedMins');
         parent::__construct('run_script');
+    }
+
+    /**
+     * Configures the current command.
+     */
+    protected function configure()
+    {
+        $this->addOption('shuffle', null, InputOption::VALUE_NONE);
     }
 
     protected function getChannelList()
@@ -74,7 +83,9 @@ class ChannelRemoveCommand extends Command {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->removeIdlers($output);
-        $this->shuffleChannels();
+        if($input->getOption('shuffle')) {
+            $this->shuffleChannels();
+        }
     }
 
     private function getLastChannelSort()
