@@ -11,4 +11,5 @@ $container = new ContainerBuilder();
 $loader = new YamlFileLoader($container, new FileLocator(__DIR__));
 $loader->load('config.yml');
 
-$container->get('application')->run();
+$application = new ChannelRemoverApplication($container);
+$application->run();
