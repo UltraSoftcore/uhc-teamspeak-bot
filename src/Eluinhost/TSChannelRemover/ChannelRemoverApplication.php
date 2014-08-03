@@ -1,5 +1,5 @@
 <?php
-namespace Eluinhot\TSChannelRemover;
+namespace Eluinhost\TSChannelRemover;
 
 
 use Symfony\Component\Console\Application;

@@ -2,7 +2,7 @@
 <?php
 require 'vendor/autoload.php';
 
-use Eluinhot\TSChannelRemover\ChannelRemoverApplication;
+use Eluinhost\TSChannelRemover\ChannelRemoverApplication;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
