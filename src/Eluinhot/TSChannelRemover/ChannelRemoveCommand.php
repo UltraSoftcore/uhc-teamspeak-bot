@@ -33,15 +33,18 @@ class ChannelRemoveCommand extends Command {
         parent::__construct('run_script');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function getChannelList()
     {
         $channel = $this->server->channelGetById($this->channelID);
-        $subChannels = $channel->subChannelList();
+        return $channel->subChannelList();
+    }
 
+    protected function removeIdlers(OutputInterface $output)
+    {
         $deleted = 0;
-
+        $list = $this->getChannelList();
         /** @var $channel Teamspeak3_Node_Channel */
-        foreach($subChannels as $channel) {
+        foreach($list as $channel) {
             if(array_search($channel->getId(), $this->excludes) !== false) {
                 continue;
             }
@@ -66,5 +69,37 @@ class ChannelRemoveCommand extends Command {
             }
         }
         $output->writeln($deleted . ' channels deleted');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->removeIdlers($output);
+        $this->shuffleChannels();
+    }
+
+    private function getLastChannelSort()
+    {
+        $excludeCount = count($this->excludes);
+
+        return $excludeCount === 0 ? 0 : $this->excludes[$excludeCount -1];
+    }
+
+    private function shuffleChannels()
+    {
+        $lastSort = $this->getLastChannelSort();
+
+        $list = $this->getChannelList();
+        $list = array_filter($list, function(TeamSpeak3_Node_Channel $channel) {
+            return array_search($channel->getId(), $this->excludes) === false;
+        });
+
+        shuffle($list);
+        /** @var $channel Teamspeak3_Node_Channel */
+        foreach($list as $channel) {
+            $channel->modify([
+                'channel_order' => $lastSort
+            ]);
+            $lastSort = $channel->getId();
+        }
     }
 } 
