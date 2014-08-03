@@ -7,5 +7,6 @@ parameters:
   teamspeak.host: 127.0.0.1
   teamspeak.server_port: 9987
   teamspeak.query_port: 10011
+  teamspeak.channelID: 1350
   teamspeak.excludes: []
   teamspeak.allowedMins: 30
