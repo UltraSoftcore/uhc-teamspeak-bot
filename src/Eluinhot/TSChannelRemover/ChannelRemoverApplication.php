@@ -2,10 +2,20 @@
 namespace Eluinhot\TSChannelRemover;
 
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
+use TeamSpeak3_Node_Server;
 
 class ChannelRemoverApplication extends Application {
+
+    private $server;
+
+    public function __construct(TeamSpeak3_Node_Server $server)
+    {
+        $this->server = $server;
+        parent::__construct('run_script');
+    }
 
     /**
      * Gets the name of the command based on input.
@@ -28,7 +38,7 @@ class ChannelRemoverApplication extends Application {
     protected function getDefaultCommands()
     {
         $defaultCommands = parent::getDefaultCommands();
-        $defaultCommands[] = new ChannelRemoveCommand();
+        $defaultCommands[] = new ChannelRemoveCommand($this->server);
         return $defaultCommands;
     }
 

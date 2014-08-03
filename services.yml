@@ -1,0 +1,16 @@
+parameters:
+  teamspeak.username: username
+  teamspeak.password: password
+  teamspeak.host: 127.0.0.1
+  teamspeak.server_port: 9987
+  teamspeak.query_port: 10011
+services:
+  teamspeak_server:
+    class: TeamSpeak3_Node_Server
+    factory_class: TeamSpeak3
+    factory_method: factory
+    arguments: ['serverquery://%teamspeak.username%:%teamspeak.password%@%teamspeak.host%:%teamspeak.query_port%/?server_port=%teamspeak.server_port%']
+  application:
+    class: Eluinhot\TSChannelRemover\ChannelRemoverApplication
+    arguments:
+    - '@teamspeak_server'

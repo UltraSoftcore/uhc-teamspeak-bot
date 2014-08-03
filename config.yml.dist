@@ -1,0 +1,9 @@
+imports:
+  - { resource: services.yml }
+
+parameters:
+  teamspeak.username: username
+  teamspeak.password: password
+  teamspeak.host: 127.0.0.1
+  teamspeak.server_port: 9987
+  teamspeak.query_port: 10011
