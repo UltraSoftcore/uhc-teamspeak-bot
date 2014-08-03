@@ -1,0 +1,11 @@
+{
+    "name": "eluinhost/ts-channel-remover",
+    "description": "Removes channels when all clients have been idle for a certain amount of time",
+    "minimum-stability": "stable",
+    "license": "GPL-3.0+",
+    "require": {
+        "planetteamspeak/ts3-php-framework": "~1.1",
+        "symfony/console": "~2.5",
+        "symfony/config": "~2.5"
+    }
+}
