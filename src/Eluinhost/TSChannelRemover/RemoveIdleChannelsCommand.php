@@ -11,7 +11,7 @@ use TeamSpeak3_Node_Channel;
 use TeamSpeak3_Node_Client;
 use TeamSpeak3_Node_Server;
 
-class ChannelRemoveCommand extends Command {
+class RemoveIdleChannelsCommand extends Command {
 
     /** @var TeamSpeak3_Node_Server */
     private $server;
