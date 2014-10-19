@@ -31,7 +31,7 @@ class ChannelRemoveCommand extends Command {
         $this->channelID = $container->getParameter('teamspeak.channelID');
         $this->excludes = $container->getParameter('teamspeak.excludes');
         $this->allowedMins = $container->getParameter('teamspeak.allowedMins');
-        parent::__construct('run_script');
+        parent::__construct('channels:removeIdle');
     }
 
     /**
