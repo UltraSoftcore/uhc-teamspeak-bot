@@ -12,6 +12,7 @@ parameters:
   afk_kick.user_count: 60
   afk_kick.excludes: []
   afk_kick.idle_mins: 30
+  afk_kick.protected_groups: [2,3,23,24]
   shuffle.base_channel: 1350
   shuffle.excludes: []
   remove_idle.base_channel: 1350

@@ -4,24 +4,36 @@ namespace Eluinhost\TSChannelRemover;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use TeamSpeak3;
 use TeamSpeak3_Node_Channel;
 use TeamSpeak3_Node_Client;
 use TeamSpeak3_Node_Server;
 
 class ClientCapIdleKickCommand extends Command {
 
-    public function __construct(TeamSpeak3_Node_Server $server, $baseID, array $excludes, $idleMins, $userCount)
+    public function __construct(TeamSpeak3_Node_Server $server, $baseID, array $excludes, $idleMins, $userCount, array $protectedGroups)
     {
         $this->server = $server;
         $this->channelID = $baseID;
         $this->excludes = $excludes;
         $this->userCount = $userCount;
         $this->allowedMins = $idleMins;
+        $this->protectedGroups = $protectedGroups;
 
         parent::__construct('clients:kickIdle');
+    }
+
+    protected function getProtectedUuids()
+    {
+        $uuids = [];
+        foreach($this->protectedGroups as $group) {
+            $clients = $this->server->serverGroupClientList($group);
+
+            foreach($clients as $p) {
+                array_push($uuids, $p['client_unique_identifier']);
+            }
+        }
+        return $uuids;
     }
 
     /**
@@ -66,10 +78,15 @@ class ClientCapIdleKickCommand extends Command {
      */
     protected function getIdleUserIds(array $channels)
     {
+        $protected = $this->getProtectedUuids();
         $idlers = [];
         foreach($channels as $channel) {
             /** @var TeamSpeak3_Node_Client $client */
             foreach($channel->clientList() as $client) {
+                if(array_search($client->getInfo()['client_unique_identifier'], $protected)) {
+                    continue;
+                }
+
                 if($client['client_idle_time']/1000/60 >= $this->allowedMins) {
                     array_push($idlers, $client->getId());
                 }
