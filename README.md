@@ -1,5 +1,5 @@
-TS-idle-kicker
-==============
+uhc-teamspeak-bot
+=================
 
 Install:
 
