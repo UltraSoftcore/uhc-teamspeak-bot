@@ -13,6 +13,12 @@ Usage:
 Commands
 --------
 
+### List Channels
+
+`channels:list`
+
+Lists all the channels on the server and their IDs
+
 ### Remove Idle users
 
 `channels:removeIdle`

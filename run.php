@@ -3,6 +3,7 @@
 require 'vendor/autoload.php';
 
 use Eluinhost\TSChannelRemover\ClientCapIdleKickCommand;
+use Eluinhost\TSChannelRemover\ListChannelsCommand;
 use Eluinhost\TSChannelRemover\RemoveIdleChannelsCommand;
 use Eluinhost\TSChannelRemover\ShuffleChannelsCommand;
 use Symfony\Component\Config\FileLocator;
@@ -37,6 +38,9 @@ $application->addCommands([
         $container->get('teamspeak_server'),
         $container->getParameter('teamspeak.channelID'),
         $container->getParameter('teamspeak.excludes')
+    ),
+    new ListChannelsCommand(
+        $container->get('teamspeak_server')
     )
 ]);
 
