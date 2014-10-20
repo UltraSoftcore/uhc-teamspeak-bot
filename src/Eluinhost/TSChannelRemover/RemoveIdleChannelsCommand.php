@@ -4,42 +4,21 @@ namespace Eluinhost\TSChannelRemover;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Container;
 use TeamSpeak3_Node_Channel;
 use TeamSpeak3_Node_Client;
 use TeamSpeak3_Node_Server;
 
 class RemoveIdleChannelsCommand extends Command {
 
-    /** @var TeamSpeak3_Node_Server */
-    private $server;
-
-    /** @var int */
-    private $channelID;
-
-    /** @var int[] */
-    private $excludes;
-
-    /** @var int */
-    private $allowedMins;
-
-    public function __construct(Container $container)
+    public function __construct(TeamSpeak3_Node_Server $server, $baseID, array $excludes, $idleMins)
     {
-        $this->server = $container->get('teamspeak_server');
-        $this->channelID = $container->getParameter('teamspeak.channelID');
-        $this->excludes = $container->getParameter('teamspeak.excludes');
-        $this->allowedMins = $container->getParameter('teamspeak.allowedMins');
+        $this->server = $server;
+        $this->channelID = $baseID;
+        $this->excludes = $excludes;
+        $this->allowedMins = $idleMins;
+
         parent::__construct('channels:removeIdle');
-    }
-
-    /**
-     * Configures the current command.
-     */
-    protected function configure()
-    {
-        $this->addOption('shuffle', null, InputOption::VALUE_NONE);
     }
 
     protected function getChannelList()
@@ -83,34 +62,5 @@ class RemoveIdleChannelsCommand extends Command {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->removeIdlers($output);
-        if($input->getOption('shuffle')) {
-            $this->shuffleChannels();
-        }
-    }
-
-    private function getLastChannelSort()
-    {
-        $excludeCount = count($this->excludes);
-
-        return $excludeCount === 0 ? 0 : $this->excludes[$excludeCount -1];
-    }
-
-    private function shuffleChannels()
-    {
-        $lastSort = $this->getLastChannelSort();
-
-        $list = $this->getChannelList();
-        $list = array_filter($list, function(TeamSpeak3_Node_Channel $channel) {
-            return array_search($channel->getId(), $this->excludes) === false;
-        });
-
-        shuffle($list);
-        /** @var $channel Teamspeak3_Node_Channel */
-        foreach($list as $channel) {
-            $channel->modify([
-                'channel_order' => $lastSort
-            ]);
-            $lastSort = $channel->getId();
-        }
     }
 } 
