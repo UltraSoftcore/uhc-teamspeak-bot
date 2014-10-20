@@ -4,7 +4,7 @@ TS-idle-kicker
 Install:
 
 - `composer install`
-- Copy config.yml.dist to config.yml
+- Copy config.yml.dist to config.yml and fill out required details
 
 Usage:
 
@@ -27,9 +27,9 @@ Removes all channels with all the user inside of it 'idle'
 
 Configuration:
 
-teamspeak.channelID - ID of the channel which all subchannels of which will be considered for removal
-teamspeak.excludes - IDs of channels to ignore
-teamspeak.allowedMins - Number of minutes before being considered idle
+    remove_idle.base_channel: 1350  # Base channel whose subchannels are checked
+    remove_idle.excludes: []        # Array of immune channels under the base channel
+    remove_idle.idle_mins: 30       # Number of minute to be considered idle
 
 ### Shuffle Channels
 
@@ -39,8 +39,8 @@ Shuffles all channels
 
 Configuration:
 
-teamspeak.channelID - ID of the channel which all subchannels of which will be shuffled
-teamspeak.excludes - IDs of channels not to shuffle, they should all be at the top of the list
+    shuffle.base_channel: 1350      # Base channel whose subchannels are shuffled
+    shuffle.excludes: []            # Array of immune channels under the base channel
 
 ### Idle player kick
 
