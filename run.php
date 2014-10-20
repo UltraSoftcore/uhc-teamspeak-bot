@@ -41,7 +41,8 @@ $application->addCommands([
    ),
     new ShuffleChannelsCommand(
         $teamspeakServer,
-        $container->getParameter('shuffle.base_channel'),
+        $teamspeakHelper,
+        $container->getParameter('shuffle.base_channels'),
         $container->getParameter('shuffle.excludes')
     ),
     new ListChannelsCommand(

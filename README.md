@@ -39,8 +39,8 @@ Shuffles all channels
 
 Configuration:
 
-    shuffle.base_channel: 1350      # Base channel whose subchannels are shuffled
-    shuffle.excludes: []            # Array of immune channels under the base channel
+    shuffle.base_channels: [1350]   # Array of base channels whose subchannels are shuffled (non-recursive).
+    shuffle.excludes: [6039, 196]   # Array of immune channels that will keep their order and be placed at the top of the shuffled list
 
 ### Idle player kick
 

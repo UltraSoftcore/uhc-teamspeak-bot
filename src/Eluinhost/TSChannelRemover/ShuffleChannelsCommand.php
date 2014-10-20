@@ -10,49 +10,66 @@ use TeamSpeak3_Node_Server;
 
 class ShuffleChannelsCommand extends Command {
 
-    public function __construct(TeamSpeak3_Node_Server $server, $baseID, array $excludes)
+    public function __construct(TeamSpeak3_Node_Server $server, TeamspeakHelper $helper, array $baseIDs, array $excludes)
     {
         $this->server = $server;
-        $this->channelID = $baseID;
+        $this->helper = $helper;
+        $this->baseIDs= $baseIDs;
         $this->excludes = $excludes;
 
         parent::__construct('channels:shuffle');
     }
 
-    protected function getChannelList()
-    {
-        $channel = $this->server->channelGetById($this->channelID);
-        return $channel->subChannelList();
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->shuffleChannels();
+        $output->writeln('Starting shuffle, protected channels: ' . json_encode($this->excludes));
+
+        $base_channels = $this->helper->getChannels($this->baseIDs);
+
+        foreach($base_channels as $channel) {
+            $this->shuffleChannel($channel, $output);
+        }
+
+        $output->writeln('Shuffled all channels');
     }
 
-    private function getLastChannelSort()
+    protected function shuffleChannel(TeamSpeak3_Node_Channel $channel, OutputInterface $output)
     {
-        $excludeCount = count($this->excludes);
+        $output->writeln('Shuffling subchannels of: ' . $channel->getPathway());
+        $fullList = $channel->subChannelList();
 
-        return $excludeCount === 0 ? 0 : $this->excludes[$excludeCount -1];
-    }
+        $excluded = [];
 
-    private function shuffleChannels()
-    {
-        $lastSort = $this->getLastChannelSort();
+        $output->writeln('Current channel order:');
+        //filter out the non protected channels
+        $toShuffle = array_filter($fullList, function(TeamSpeak3_Node_Channel $channel) use (&$excluded, $output) {
+            $output->writeln($channel->getPathway() . ' (' . $channel->getId() . ')');
 
-        $list = $this->getChannelList();
-        $list = array_filter($list, function(TeamSpeak3_Node_Channel $channel) {
-            return array_search($channel->getId(), $this->excludes) === false;
+            //if it's not protected add to the shuffle list
+            if(array_search($channel->getId(), $this->excludes) === false) {
+                return true;
+            }
+
+            //if it is protected add directly to final list
+            array_push($excluded, $channel);
+            return false;
         });
 
-        shuffle($list);
-        /** @var $channel Teamspeak3_Node_Channel */
-        foreach($list as $channel) {
-            $channel->modify([
-                'channel_order' => $lastSort
-            ]);
-            $lastSort = $channel->getId();
-        }
+        shuffle($toShuffle);
+
+        //add the shuffled list on after the excluded channels
+        $final = array_merge($excluded, $toShuffle);
+
+        $output->writeln('New channel order:');
+        array_reduce($final, function($carry, TeamSpeak3_Node_Channel $channel) use ($output) {
+            $output->writeln($channel->getPathway() . ' (' . $channel->getId() . ')');
+
+            $channel->modify(['channel_order' => $carry]);
+
+            //return current channel ID to pass onto next iteration
+            return $channel->getId();
+        }, 0);
+
+        $output->writeln('Channel shuffle complete');
     }
 } 
