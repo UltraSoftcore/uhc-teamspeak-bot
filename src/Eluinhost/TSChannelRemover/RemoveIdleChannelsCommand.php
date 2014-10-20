@@ -54,8 +54,8 @@ class RemoveIdleChannelsCommand extends Command {
             if($channelDeletable) {
                 $deleted++;
                 $channel->message('Channel deleted due to every client being idle too long');
-                $channel->delete(true);
                 $output->writeln('Channel delteted: ' . $channel->getPathway());
+                $channel->delete(true);
             }
         }
         $output->writeln($deleted . ' channels deleted');
