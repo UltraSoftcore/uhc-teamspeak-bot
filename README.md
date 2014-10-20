@@ -27,9 +27,9 @@ Removes all channels with all the user inside of it 'idle'
 
 Configuration:
 
-    remove_idle.base_channel: 1350  # Base channel whose subchannels are checked
-    remove_idle.excludes: []        # Array of immune channels under the base channel
-    remove_idle.idle_mins: 30       # Number of minute to be considered idle
+    remove_idle.base_channels: [1350]  # Array of base channel whose subchannels are checked (including the channel itself). If empty uses ALL the root channels of the server
+    remove_idle.excludes: [1350]       # Array of immune channels under the base channel, subchannels will still be processed
+    remove_idle.idle_mins: 30          # Number of minute to be considered idle
 
 ### Shuffle Channels
 
@@ -39,8 +39,8 @@ Shuffles all channels
 
 Configuration:
 
-    shuffle.base_channel: 1350      # Base channel whose subchannels are shuffled
-    shuffle.excludes: []            # Array of immune channels under the base channel
+    shuffle.base_channels: [1350]   # Array of base channels whose subchannels are shuffled (non-recursive).
+    shuffle.excludes: [6039, 196]   # Array of immune channels that will keep their order and be placed at the top of the shuffled list
 
 ### Idle player kick
 
@@ -50,10 +50,10 @@ Kicks all 'idle' clients when the server is past a threshold of clients
 
 Configuration:
 
-    afk_kick.base_channel: 202   # The channel (and subchannels) in which clients can be kicked from
-    afk_kick.user_count: 360     # The client count before kicking takes place
-    afk_kick.excludes: []        # Array of immune channels under the base channel
-    afk_kick.idle_mins: 30       # Number of minutes to be considered idle
+    afk_kick.base_channels: [202] # Array of channels (and their subchannels recursively) in which clients can be kicked from. Empty array counts as all the root channels (therefore entire server)
+    afk_kick.user_count: 360      # The client count before kicking takes place
+    afk_kick.excludes: []         # Array of immune channels under the base channel
+    afk_kick.idle_mins: 30        # Number of minutes to be considered idle
 
 Configuration
 -------------
