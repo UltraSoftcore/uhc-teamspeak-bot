@@ -26,7 +26,8 @@ $application->addCommands([
         $container->getParameter('afk_kick.base_channel'),
         $container->getParameter('afk_kick.excludes'),
         $container->getParameter('afk_kick.idle_mins'),
-        $container->getParameter('afk_kick.user_count')
+        $container->getParameter('afk_kick.user_count'),
+        $container->getParameter('afk_kick.protected_groups')
     ),
     new RemoveIdleChannelsCommand(
         $teamspeakServer,
