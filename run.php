@@ -6,6 +6,7 @@ use Eluinhost\TSChannelRemover\ClientCapIdleKickCommand;
 use Eluinhost\TSChannelRemover\ListChannelsCommand;
 use Eluinhost\TSChannelRemover\RemoveIdleChannelsCommand;
 use Eluinhost\TSChannelRemover\ShuffleChannelsCommand;
+use Eluinhost\TSChannelRemover\TeamspeakHelper;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,6 +20,8 @@ $application = new Application('uhc-teamspeak-bot');
 
 /** @var TeamSpeak3_Node_server $teamspeakServer */
 $teamspeakServer = $container->get('teamspeak_server');
+/** @var TeamspeakHelper $teamspeakHelper */
+$teamspeakHelper = $container->get('teamspeak_helper');
 
 $application->addCommands([
     new ClientCapIdleKickCommand(
@@ -31,7 +34,8 @@ $application->addCommands([
     ),
     new RemoveIdleChannelsCommand(
         $teamspeakServer,
-        $container->getParameter('remove_idle.base_channel'),
+        $teamspeakHelper,
+        $container->getParameter('remove_idle.base_channels'),
         $container->getParameter('remove_idle.excludes'),
         $container->getParameter('remove_idle.idle_mins')
    ),

@@ -27,9 +27,9 @@ Removes all channels with all the user inside of it 'idle'
 
 Configuration:
 
-    remove_idle.base_channel: 1350  # Base channel whose subchannels are checked
-    remove_idle.excludes: []        # Array of immune channels under the base channel
-    remove_idle.idle_mins: 30       # Number of minute to be considered idle
+    remove_idle.base_channels: [1350]  # Array of base channel whose subchannels are checked (including the channel itself). If empty uses ALL the root channels of the server
+    remove_idle.excludes: [1350]       # Array of immune channels under the base channel, subchannels will still be processed
+    remove_idle.idle_mins: 30          # Number of minute to be considered idle
 
 ### Shuffle Channels
 

@@ -11,28 +11,30 @@ use TeamSpeak3_Node_Server;
 
 class RemoveIdleChannelsCommand extends Command {
 
-    public function __construct(TeamSpeak3_Node_Server $server, $baseID, array $excludes, $idleMins)
+    public function __construct(TeamSpeak3_Node_Server $server, TeamspeakHelper $helper, array $baseIDs, array $excludes, $idleMins)
     {
         $this->server = $server;
-        $this->channelID = $baseID;
+        $this->helper = $helper;
+        $this->baseIDs = $baseIDs;
         $this->excludes = $excludes;
         $this->allowedMins = $idleMins;
 
         parent::__construct('channels:removeIdle');
     }
 
-    protected function getChannelList()
-    {
-        $channel = $this->server->channelGetById($this->channelID);
-        return $channel->subChannelList();
-    }
-
-    protected function removeIdlers(OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $deleted = 0;
-        $list = $this->getChannelList();
+
+        //get all the channels we want to check
+        $base_channels = count($this->baseIDs) == 0 ? null : $this->helper->getChannels($this->baseIDs);
+
+        //get all their subchannels too
+        $list = $this->helper->getEntireTree($base_channels);
+
         /** @var $channel Teamspeak3_Node_Channel */
         foreach($list as $channel) {
+            //if it's a protected channel don't do anything
             if(array_search($channel->getId(), $this->excludes) !== false) {
                 continue;
             }
@@ -51,16 +53,11 @@ class RemoveIdleChannelsCommand extends Command {
 
             if($channelDeletable) {
                 $deleted++;
-                $channel->message('Channel deleted due to every client being idle too long');
-                $channel->delete(true);
-                $output->writeln('Channel delteted: ' . $channel->getProperty('channel_name'));
+                //$channel->message('Channel deleted due to every client being idle too long');
+                //$channel->delete(true);
+                $output->writeln('Channel delteted: ' . $channel->getPathway());
             }
         }
         $output->writeln($deleted . ' channels deleted');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $this->removeIdlers($output);
     }
 } 

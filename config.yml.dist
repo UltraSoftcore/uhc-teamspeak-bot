@@ -15,6 +15,6 @@ parameters:
   afk_kick.protected_groups: [2,3,23,24]
   shuffle.base_channel: 1350
   shuffle.excludes: []
-  remove_idle.base_channel: 1350
-  remove_idle.excludes: []
+  remove_idle.base_channels: [1350]
+  remove_idle.excludes: [6039, 196, 1350]
   remove_idle.idle_mins: 30
