@@ -29,18 +29,18 @@ $application->addCommands([
         $container->getParameter('afk_kick.user_count')
     ),
     new RemoveIdleChannelsCommand(
-       $container->get('teamspeak_server'),
-       $container->getParameter('teamspeak.channelID'),
-       $container->getParameter('teamspeak.excludes'),
-       $container->getParameter('teamspeak.allowedMins')
+        $teamspeakServer,
+        $container->getParameter('remove_idle.base_channel'),
+        $container->getParameter('remove_idle.excludes'),
+        $container->getParameter('remove_idle.idle_mins')
    ),
     new ShuffleChannelsCommand(
-        $container->get('teamspeak_server'),
-        $container->getParameter('teamspeak.channelID'),
-        $container->getParameter('teamspeak.excludes')
+        $teamspeakServer,
+        $container->getParameter('shuffle.base_channel'),
+        $container->getParameter('shuffle.excludes')
     ),
     new ListChannelsCommand(
-        $container->get('teamspeak_server')
+        $teamspeakServer
     )
 ]);
 

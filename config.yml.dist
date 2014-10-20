@@ -7,10 +7,13 @@ parameters:
   teamspeak.host: 127.0.0.1
   teamspeak.server_port: 9987
   teamspeak.query_port: 10011
-  teamspeak.channelID: 1350
-  teamspeak.excludes: []
-  teamspeak.allowedMins: 30
+
   afk_kick.base_channel: 202
-  afk_kick.user_count: 360
+  afk_kick.user_count: 60
   afk_kick.excludes: []
   afk_kick.idle_mins: 30
+  shuffle.base_channel: 1350
+  shuffle.excludes: []
+  remove_idle.base_channel: 1350
+  remove_idle.excludes: []
+  remove_idle.idle_mins: 30
