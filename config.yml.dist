@@ -10,3 +10,7 @@ parameters:
   teamspeak.channelID: 1350
   teamspeak.excludes: []
   teamspeak.allowedMins: 30
+  afk_kick.base_channel: 202
+  afk_kick.user_count: 360
+  afk_kick.excludes: []
+  afk_kick.idle_mins: 30

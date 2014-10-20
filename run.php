@@ -2,6 +2,7 @@
 <?php
 require 'vendor/autoload.php';
 
+use Eluinhost\TSChannelRemover\ClientCapIdleKickCommand;
 use Eluinhost\TSChannelRemover\ListChannelsCommand;
 use Eluinhost\TSChannelRemover\RemoveIdleChannelsCommand;
 use Eluinhost\TSChannelRemover\ShuffleChannelsCommand;
@@ -16,8 +17,18 @@ $loader->load('config.yml');
 
 $application = new Application('uhc-teamspeak-bot');
 
+/** @var TeamSpeak3_Node_server $teamspeakServer */
+$teamspeakServer = $container->get('teamspeak_server');
+
 $application->addCommands([
-   new RemoveIdleChannelsCommand(
+    new ClientCapIdleKickCommand(
+        $teamspeakServer,
+        $container->getParameter('afk_kick.base_channel'),
+        $container->getParameter('afk_kick.excludes'),
+        $container->getParameter('afk_kick.idle_mins'),
+        $container->getParameter('afk_kick.user_count')
+    ),
+    new RemoveIdleChannelsCommand(
        $container->get('teamspeak_server'),
        $container->getParameter('teamspeak.channelID'),
        $container->getParameter('teamspeak.excludes'),
