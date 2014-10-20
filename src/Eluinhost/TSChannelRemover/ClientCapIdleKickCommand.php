@@ -5,16 +5,18 @@ namespace Eluinhost\TSChannelRemover;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TeamSpeak3;
 use TeamSpeak3_Node_Channel;
 use TeamSpeak3_Node_Client;
 use TeamSpeak3_Node_Server;
 
 class ClientCapIdleKickCommand extends Command {
 
-    public function __construct(TeamSpeak3_Node_Server $server, $baseID, array $excludes, $idleMins, $userCount, array $protectedGroups)
+    public function __construct(TeamSpeak3_Node_Server $server, TeamspeakHelper $helper, array $baseIDs, array $excludes, $idleMins, $userCount, array $protectedGroups)
     {
         $this->server = $server;
-        $this->channelID = $baseID;
+        $this->baseIDs = $baseIDs;
+        $this->helper = $helper;
         $this->excludes = $excludes;
         $this->userCount = $userCount;
         $this->allowedMins = $idleMins;
@@ -43,33 +45,18 @@ class ClientCapIdleKickCommand extends Command {
      */
     protected function getChannelList()
     {
-        $base = $this->server->channelGetById($this->channelID);
+        //get all the chosen base channels
+        $base_channels = count($this->baseIDs) == 0 ? null : $this->helper->getChannels($this->baseIDs);
 
-        $channels = $this->getEntireTree($base);
+        //add all of their children recursive
+        $all_channels = $this->helper->getEntireTree($base_channels);
 
+        //remove the excluded channels
         foreach($this->excludes as $exclude) {
-            unset($channels[$exclude]);
+            unset($all_channels[$exclude]);
         }
 
-        return $channels;
-    }
-
-    /**
-     * Returns all the channels below and including the given channel. ID => TeamSpeak3_Node_Channel
-     *
-     * @param TeamSpeak3_Node_Channel $channel
-     * @return TeamSpeak3_Node_Channel[]
-     */
-    protected function getEntireTree(TeamSpeak3_Node_Channel $channel)
-    {
-        $allChannels = [];
-        /** @var TeamSpeak3_Node_Channel $child */
-        foreach ($channel->subChannelList() as $child) {
-            $allChannels[$child->getId()] = $child;
-            array_replace($this->getEntireTree($child), $allChannels);
-        }
-        $allChannels[$channel->getId()] = $channel;
-        return $allChannels;
+        return $all_channels;
     }
 
     /**
@@ -83,10 +70,12 @@ class ClientCapIdleKickCommand extends Command {
         foreach($channels as $channel) {
             /** @var TeamSpeak3_Node_Client $client */
             foreach($channel->clientList() as $client) {
+                //if they're a protected user, skip them
                 if(array_search($client->getInfo()['client_unique_identifier'], $protected)) {
                     continue;
                 }
 
+                //if they're idle add them to the list of idle users
                 if($client['client_idle_time']/1000/60 >= $this->allowedMins) {
                     array_push($idlers, $client->getId());
                 }
@@ -116,7 +105,8 @@ class ClientCapIdleKickCommand extends Command {
         }
 
         foreach($idleList as $idler) {
-            $output->writeln('Kicked client: ' . $this->server->clientGetById($idler) . ' (' . $idler . ')');
+            $client = $this->server->clientGetById($idler);
+            $output->writeln('Kicked client: ' . $client . ' (' . $idler . ') from ' . $this->server->channelGetById($client['cid'])->getPathway());
             $this->server->clientKick($idler, TeamSpeak3::KICK_SERVER, 'Kicked due to idling and server requiring space');
         }
 

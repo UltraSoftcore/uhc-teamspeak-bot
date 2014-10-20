@@ -26,7 +26,8 @@ $teamspeakHelper = $container->get('teamspeak_helper');
 $application->addCommands([
     new ClientCapIdleKickCommand(
         $teamspeakServer,
-        $container->getParameter('afk_kick.base_channel'),
+        $teamspeakHelper,
+        $container->getParameter('afk_kick.base_channels'),
         $container->getParameter('afk_kick.excludes'),
         $container->getParameter('afk_kick.idle_mins'),
         $container->getParameter('afk_kick.user_count'),

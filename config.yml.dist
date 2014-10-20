@@ -8,8 +8,8 @@ parameters:
   teamspeak.server_port: 9987
   teamspeak.query_port: 10011
 
-  afk_kick.base_channel: 202
-  afk_kick.user_count: 60
+  afk_kick.base_channels: [202]
+  afk_kick.user_count: 360
   afk_kick.excludes: []
   afk_kick.idle_mins: 30
   afk_kick.protected_groups: [2,3,23,24]
@@ -17,4 +17,4 @@ parameters:
   shuffle.excludes: [6039, 196]
   remove_idle.base_channels: [1350]
   remove_idle.excludes: [6039, 196, 1350]
-  remove_idle.idle_mins: 30
+  remove_idle.idle_mins: 10

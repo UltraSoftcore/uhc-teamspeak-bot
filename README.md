@@ -50,10 +50,10 @@ Kicks all 'idle' clients when the server is past a threshold of clients
 
 Configuration:
 
-    afk_kick.base_channel: 202   # The channel (and subchannels) in which clients can be kicked from
-    afk_kick.user_count: 360     # The client count before kicking takes place
-    afk_kick.excludes: []        # Array of immune channels under the base channel
-    afk_kick.idle_mins: 30       # Number of minutes to be considered idle
+    afk_kick.base_channels: [202] # Array of channels (and their subchannels recursively) in which clients can be kicked from. Empty array counts as all the root channels (therefore entire server)
+    afk_kick.user_count: 360      # The client count before kicking takes place
+    afk_kick.excludes: []         # Array of immune channels under the base channel
+    afk_kick.idle_mins: 30        # Number of minutes to be considered idle
 
 Configuration
 -------------
